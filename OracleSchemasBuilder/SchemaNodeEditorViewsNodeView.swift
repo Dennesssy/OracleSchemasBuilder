@@ -1,17 +1,8 @@
-//
-//  NodeView.swift
-//  SchemaNodeEditor
-//
-//  Created by Dennis Stewart Jr. on 11/11/25.
-//
-
 import SwiftUI
 
 struct NodeView: View {
     let node: SchemaNode
     @EnvironmentObject var sessionManager: SessionManager
-    @State private var dragOffset: CGSize = .zero
-    @State private var isDragging = false
     
     var isSelected: Bool {
         sessionManager.selectedNodeId == node.id
@@ -77,21 +68,14 @@ struct NodeView: View {
                     .stroke(Color.accentColor, lineWidth: 2)
             }
         }
-        .offset(dragOffset)
+        .offset(x: node.position.x, y: node.position.y)
         .gesture(
             DragGesture()
                 .onChanged { value in
-                    isDragging = true
-                    dragOffset = value.translation
-                }
-                .onEnded { value in
-                    let newPosition = CGPoint(
+                    sessionManager.moveNode(node.id, to: CGPoint(
                         x: node.position.x + value.translation.width,
                         y: node.position.y + value.translation.height
-                    )
-                    sessionManager.moveNode(node.id, to: newPosition)
-                    dragOffset = .zero
-                    isDragging = false
+                    ))
                 }
         )
         .onTapGesture {
