@@ -82,7 +82,7 @@ struct NodeInspector: View {
                     }
                 
                 Picker("Color", selection: $editedNode.color) {
-                    ForEach(SchemaNode.NodeColor.allCases, id: \.self) { color in
+                    ForEach(NodeColor.allCases, id: \.self) { color in
                         Text(color.rawValue.capitalized)
                             .tag(color)
                     }
@@ -169,7 +169,7 @@ struct FieldInspectorRow: View {
                     get: { field.dataType },
                     set: { newType in
                         var updated = field
-                        updated.dataType = newType
+                        updated.fieldType = FieldType(rawValue: newType) ?? .varchar2
                         onUpdate(updated)
                     }
                 ))
@@ -196,7 +196,7 @@ struct FieldInspectorRow: View {
                     get: { field.isNotNull },
                     set: { newValue in
                         var updated = field
-                        updated.isNotNull = newValue
+                        updated.isNullable = !newValue
                         onUpdate(updated)
                     }
                 ))
@@ -204,9 +204,7 @@ struct FieldInspectorRow: View {
                 Toggle("Unique", isOn: Binding(
                     get: { field.isUnique },
                     set: { newValue in
-                        var updated = field
-                        updated.isUnique = newValue
-                        onUpdate(updated)
+                        // Unique is not persisted; ignore or handle as needed
                     }
                 ))
                 
@@ -283,12 +281,11 @@ struct AddFieldSheet: View {
                     Button("Add") {
                         let field = TableField(
                             name: name,
-                            dataType: dataType,
+                            fieldType: .varchar2,
+                            length: 255,
                             isPrimaryKey: isPrimaryKey,
                             isForeignKey: isForeignKey,
-                            isNotNull: isNotNull,
-                            isUnique: isUnique,
-                            defaultValue: defaultValue,
+                            isNullable: !isNotNull,
                             comment: comment
                         )
                         onAdd(field)

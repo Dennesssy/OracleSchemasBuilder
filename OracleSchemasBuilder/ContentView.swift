@@ -75,7 +75,7 @@ struct ContentView: View {
         } detail: {
             // Main canvas area
             ZStack {
-                CanvasView()
+                CanvasView(selectedNodeId: $sessionManager.selectedNodeId)
                 
                 if sessionManager.currentSession.nodes.isEmpty {
                     VStack(spacing: 16) {

@@ -68,6 +68,11 @@ class TableField: Identifiable, Codable {
         self.referencedField = referencedField
     }
     
+    // MARK: - UI‑friendly aliases
+    var dataType: String { typeDescription }
+    var isNotNull: Bool { !isNullable }
+    var isUnique: Bool { false }
+    
     var typeDescription: String {
         switch fieldType {
         case .varchar2, .char:

@@ -92,13 +92,11 @@ struct ExportView: View {
     }
     
     private func updatePreview() {
-        let exporter = MarkdownExporter()
-        
         switch selectedFormat {
         case .sql:
-            previewText = exporter.exportOracleSQL(sessionManager.currentSession)
+            previewText = MarkdownExporter.exportOracleSQL(session: sessionManager.currentSession)
         case .markdown:
-            previewText = exporter.exportSession(sessionManager.currentSession)
+            previewText = MarkdownExporter.exportSession(session: sessionManager.currentSession)
         case .json:
             let encoder = JSONEncoder()
             encoder.outputFormatting = [.prettyPrinted, .sortedKeys]

@@ -9,10 +9,9 @@ import SwiftUI
 
 struct CanvasView: View {
     @EnvironmentObject var sessionManager: SessionManager
-    @Binding var selectedNode: SchemaNode?
+    @Binding var selectedNodeId: UUID?
     @State private var offset: CGSize = .zero
     @State private var scale: CGFloat = 1.0
-    @State private var isDraggingCanvas = false
     
     var body: some View {
         GeometryReader { geometry in
@@ -35,12 +34,12 @@ struct CanvasView: View {
                 ForEach(sessionManager.currentSession.nodes) { node in
                     NodeView(
                         node: node,
-                        isSelected: selectedNode?.id == node.id,
+                        isSelected: selectedNodeId == node.id,
                         offset: offset,
                         scale: scale
                     )
                     .onTapGesture {
-                        selectedNode = node
+                        selectedNodeId = node.id
                     }
                 }
             }
@@ -48,7 +47,7 @@ struct CanvasView: View {
             .gesture(
                 DragGesture()
                     .onChanged { value in
-                        if selectedNode == nil {
+                        if selectedNodeId == nil {
                             offset = CGSize(
                                 width: offset.width + value.translation.width,
                                 height: offset.height + value.translation.height
@@ -142,6 +141,6 @@ struct ConnectionLineView: View {
 }
 
 #Preview {
-    CanvasView(selectedNode: .constant(nil))
+    CanvasView(selectedNodeId: .constant(nil))
         .environmentObject(SessionManager())
 }

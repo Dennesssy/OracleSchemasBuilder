@@ -28,12 +28,6 @@ struct NodeView: View {
                     Text(node.name)
                         .font(.headline)
                         .foregroundStyle(.white)
-                    
-                    if !node.tableName.isEmpty {
-                        Text(node.tableName)
-                            .font(.caption)
-                            .foregroundStyle(.white.opacity(0.8))
-                    }
                 }
                 
                 Spacer()
@@ -105,16 +99,7 @@ struct NodeView: View {
         }
     }
     
-    private func colorForNode(_ color: SchemaNode.NodeColor) -> Color {
-        switch color {
-        case .blue: return .blue
-        case .green: return .green
-        case .orange: return .orange
-        case .purple: return .purple
-        case .red: return .red
-        case .gray: return .gray
-        }
-    }
+    private func colorForNode(_ color: NodeColor) -> Color { color.color }
 }
 
 struct FieldRow: View {

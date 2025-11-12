@@ -10,7 +10,7 @@ import SwiftUI
 
 @MainActor
 class SessionManager: ObservableObject {
-    @Published var currentSession: Session
+    @Published var currentSession: Session = Session()
     @Published var selectedNodeId: UUID?
     @Published var selectedConnectionId: UUID?
     @Published var isDirty: Bool = false
@@ -30,7 +30,16 @@ class SessionManager: ObservableObject {
             y: Double.random(in: 100...500)
         )
         
-        let node = SchemaNode(position: newPosition)
+        let node = SchemaNode(
+            name: "NewTable",
+            nodeType: .table,
+            position: newPosition,
+            fields: [],
+            notes: "",
+            schema: "PUBLIC",
+            color: .blue,
+            outgoingConnections: []
+        )
         currentSession.nodes.append(node)
         selectedNodeId = node.id
         markDirty()
@@ -129,5 +138,23 @@ class SessionManager: ObservableObject {
     
     func node(for id: UUID) -> SchemaNode? {
         currentSession.nodes.first { $0.id == id }
+    }
+    
+    // Helper methods used by the canvas context menu
+    func addTableNode(at position: CGPoint) { addNode(at: position) }
+    func addViewNode(at position: CGPoint) {
+        let node = SchemaNode(
+            name: "NewView",
+            nodeType: .view,
+            position: position,
+            fields: [],
+            notes: "",
+            schema: "PUBLIC",
+            color: .green,
+            outgoingConnections: []
+        )
+        currentSession.nodes.append(node)
+        selectedNodeId = node.id
+        markDirty()
     }
 }

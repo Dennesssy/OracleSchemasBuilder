@@ -9,12 +9,7 @@ import Foundation
 import SwiftUI
 
 enum NodeType: String, Codable, CaseIterable {
-    case table
-    case view
-    case procedure
-    case function
-    case sequence
-    case package
+    case table, view, procedure, function, sequence, package
 }
 
 @Observable
@@ -27,8 +22,6 @@ class SchemaNode: Identifiable, Codable {
     var notes: String
     var schema: String
     var color: NodeColor
-    
-    // For connections
     var outgoingConnections: [UUID] // IDs of connected nodes
     
     init(
@@ -64,9 +57,8 @@ class SchemaNode: Identifiable, Codable {
         name = try container.decode(String.self, forKey: .name)
         nodeType = try container.decode(NodeType.self, forKey: .nodeType)
         
-        let x = try container.decode(CGFloat.self, forKey: .position)
-        let y = try container.decode([CGFloat].self, forKey: .position)
-        position = CGPoint(x: x, y: y[1])
+        let posArray = try container.decode([CGFloat].self, forKey: .position)
+        position = CGPoint(x: posArray[0], y: posArray[1])
         
         fields = try container.decode([TableField].self, forKey: .fields)
         notes = try container.decode(String.self, forKey: .notes)
@@ -87,21 +79,39 @@ class SchemaNode: Identifiable, Codable {
         try container.encode(color, forKey: .color)
         try container.encode(outgoingConnections, forKey: .outgoingConnections)
     }
+    
+    // MARK: - Helpers
+    
+    /// Alias used by the UI for the table name field
+    var tableName: String {
+        get { name }
+        set { name = newValue }
+    }
+    
+    /// Layout helpers for CanvasRenderer
+    var frameSize: CGSize {
+        let headerHeight: CGFloat = 30
+        let fieldHeight: CGFloat = 16
+        let totalHeight = headerHeight + CGFloat(fields.count) * fieldHeight + 12
+        return CGSize(width: 300, height: totalHeight)
+    }
+    
+    var frame: CGRect {
+        CGRect(origin: position, size: frameSize)
+    }
 }
 
-struct NodeColor: Codable, Equatable {
-    var red: Double
-    var green: Double
-    var blue: Double
-    var alpha: Double
-    
-    static let blue = NodeColor(red: 0.0, green: 0.5, blue: 1.0, alpha: 1.0)
-    static let green = NodeColor(red: 0.0, green: 0.8, blue: 0.4, alpha: 1.0)
-    static let orange = NodeColor(red: 1.0, green: 0.6, blue: 0.0, alpha: 1.0)
-    static let purple = NodeColor(red: 0.6, green: 0.3, blue: 0.9, alpha: 1.0)
-    static let red = NodeColor(red: 0.9, green: 0.2, blue: 0.2, alpha: 1.0)
+enum NodeColor: String, CaseIterable, Codable, Equatable {
+    case blue, green, orange, purple, red, gray
     
     var color: Color {
-        Color(red: red, green: green, blue: blue, opacity: alpha)
+        switch self {
+        case .blue:   return .blue
+        case .green:  return .green
+        case .orange: return .orange
+        case .purple: return .purple
+        case .red:    return .red
+        case .gray:   return .gray
+        }
     }
 }

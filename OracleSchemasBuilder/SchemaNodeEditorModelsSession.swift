@@ -38,6 +38,25 @@ class Session: Codable {
         self.canvasScale = canvasScale
     }
     
+    // MARK: - Compatibility aliases used throughout the UI
+    
+    /// The UI (ContentView, ExportView, SessionManager) expects `modifiedAt`
+    var modifiedAt: Date {
+        get { modifiedDate }
+        set { modifiedDate = newValue }
+    }
+    
+    /// The UI uses `canvasZoom`; map it to `canvasScale`
+    var canvasZoom: Double {
+        get { canvasScale }
+        set { canvasScale = newValue }
+    }
+    
+    /// Convenience counts for the inspector & sidebar
+    var tableCount: Int { nodes.count }
+    var fieldCount: Int { nodes.reduce(0) { $0 + $0.fields.count } }
+    var relationshipCount: Int { connections.count }
+    
     // MARK: - Codable
     enum CodingKeys: String, CodingKey {
         case id, name, createdDate, modifiedDate
