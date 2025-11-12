@@ -1,7 +1,7 @@
 import SwiftUI
 
 struct CanvasView: View {
-    @EnvironmentObject var sessionManager: SessionManager
+    @Environment(SessionManager.self) private var sessionManager
     @Binding var selectedNodeId: UUID?
     // Pan‑zoom is owned locally by the view
     @State private var offset: CGSize = .zero

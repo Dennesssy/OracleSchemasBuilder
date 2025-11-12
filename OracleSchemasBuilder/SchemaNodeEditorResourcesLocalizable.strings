@@ -1,0 +1,55 @@
+/* 
+  Localizable.strings
+  SchemaNodeEditor
+
+  Created by Dennis Stewart Jr. on 11/11/25.
+*/
+
+// General
+"app.name" = "Schema Node Editor";
+"untitled" = "Untitled Schema";
+
+// Actions
+"action.new" = "New";
+"action.save" = "Save";
+"action.export" = "Export";
+"action.delete" = "Delete";
+"action.cancel" = "Cancel";
+"action.done" = "Done";
+"action.add" = "Add";
+"action.edit" = "Edit";
+
+// Nodes
+"node.add" = "Add Table";
+"node.delete" = "Delete Table";
+"node.name" = "Table Name";
+"node.fields" = "Fields";
+"node.noFields" = "No fields";
+
+// Fields
+"field.add" = "Add Field";
+"field.name" = "Field Name";
+"field.dataType" = "Data Type";
+"field.primaryKey" = "Primary Key";
+"field.foreignKey" = "Foreign Key";
+"field.notNull" = "Not Null";
+"field.unique" = "Unique";
+"field.default" = "Default Value";
+"field.comment" = "Comment";
+
+// Export
+"export.title" = "Export Schema";
+"export.format.sql" = "Oracle SQL";
+"export.format.markdown" = "Markdown";
+"export.format.json" = "JSON";
+"export.copyToClipboard" = "Copy to Clipboard";
+"export.saveToFile" = "Save to File...";
+
+// Statistics
+"stats.tables" = "Tables";
+"stats.fields" = "Fields";
+"stats.relationships" = "Relationships";
+
+// Empty States
+"empty.noTables" = "No Tables Yet";
+"empty.addTablePrompt" = "Click 'Add Table' to create your first table";

@@ -9,7 +9,7 @@ import WebKit
 /// The web page should reside in the app bundle under the name
 /// `pixiCanvas.html` (see the accompanying HTML file).
 struct PixiCanvasView: NSViewRepresentable {
-    @EnvironmentObject var sessionManager: SessionManager
+    @Environment(SessionManager.self) private var sessionManager
     
     // The name of the local HTML file that contains the PixiJS app.
     private let htmlFileName = "pixiCanvas"

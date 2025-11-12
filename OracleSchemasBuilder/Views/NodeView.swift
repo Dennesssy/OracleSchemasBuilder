@@ -3,7 +3,7 @@ import SwiftUI
 /// Visual representation of a database table on the canvas.
 struct NodeView: View {
     let node: SchemaNode
-    @EnvironmentObject var sessionManager: SessionManager
+    @Environment(SessionManager.self) private var sessionManager
     
     var isSelected: Bool {
         sessionManager.selectedNodeId == node.id

@@ -3,7 +3,7 @@ import SwiftUI
 struct ContentView: View {
     // MARK: - Environment & State
     
-    @EnvironmentObject var sessionManager: SessionManager
+    @Environment(SessionManager.self) private var sessionManager
     @Environment(\.undoManager) var undoManager
     @StateObject private var canvasState = CanvasState()
     
@@ -156,6 +156,8 @@ struct ContentView: View {
                 SettingsView()
             }
         }
+        // Provide CanvasState through environment
+        .environment(canvasState)
         // -------------------------------------------------
         // Provide the UndoManager to the SessionManager *once*
         // the view hierarchy is attached to a window.

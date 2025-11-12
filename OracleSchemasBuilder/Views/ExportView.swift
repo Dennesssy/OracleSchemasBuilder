@@ -6,7 +6,7 @@ private let exportLogger = Logger(subsystem: Bundle.main.bundleIdentifier ?? "Sc
 
 struct ExportView: View {
     @Environment(\.dismiss) private var dismiss
-    @EnvironmentObject var sessionManager: SessionManager
+    @Environment(SessionManager.self) private var sessionManager
     @State private var selectedFormat: ExportFormat = .sql
     @State private var showingFilePicker = false
     @State private var previewText = ""

@@ -12,6 +12,7 @@ struct Constants {
     struct Canvas {
         static let minZoom: CGFloat = 0.5
         static let maxZoom: CGFloat = 2.0
+        static let gridSpacing: CGFloat = 20.0
     }
     
     struct File {

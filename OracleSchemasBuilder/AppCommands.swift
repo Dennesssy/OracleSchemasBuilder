@@ -1,7 +1,7 @@
 import SwiftUI
 
 struct AppCommands: Commands {
-    @EnvironmentObject var sessionManager: SessionManager
+    @Environment(SessionManager.self) private var sessionManager
     @Environment(\.undoManager) var undoManager
     
     var body: some Commands {

@@ -1,7 +1,7 @@
 import Foundation
 import CoreGraphics
 
-enum Constants {
+enum SchemaEditorConstants {
     // MARK: - Canvas
     enum Canvas {
         static let gridSpacing: CGFloat = 20
