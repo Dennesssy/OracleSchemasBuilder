@@ -1,10 +1,3 @@
-//
-//  CanvasRenderer.swift
-//  SchemaNodeEditor
-//
-//  Created by Dennis Stewart Jr. on 11/11/25.
-//
-
 import SwiftUI
 import AppKit
 
@@ -13,6 +6,15 @@ import AppKit
 /// UIKit type that is not available on macOS.  Replaced with `NSBezierPath`.
 class CanvasRenderer {
     
+    // MARK: - Constants
+    
+    private static let headerHeight: CGFloat = 30
+    private static let cornerRadius: CGFloat = 8
+    private static let headerVerticalPadding: CGFloat = 4
+    private static let headerHorizontalPadding: CGFloat = 8
+    private static let fieldVerticalPadding: CGFloat = 4
+    private static let fieldHorizontalPadding: CGFloat = 8
+    
     // MARK: - Drawing a node
     
     static func drawNode(_ node: SchemaNode,
@@ -20,15 +22,12 @@ class CanvasRenderer {
                          isSelected: Bool,
                          isDarkMode: Bool) {
         let frame = node.frame
-        let cornerRadius: CGFloat = 8
-        
         // Background colour
         let backgroundColor = isSelected
             ? CGColor(gray: 0.2, alpha: 1.0)
             : CGColor(gray: 0.15, alpha: 1.0)
         context.setFillColor(backgroundColor)
         
-        // Rounded rectangle using macOS API
         let path = NSBezierPath(roundedRect: frame,
                                 xRadius: cornerRadius,
                                 yRadius: cornerRadius)
@@ -45,28 +44,24 @@ class CanvasRenderer {
         context.strokePath()
         
         // Header background
-        let headerHeight: CGFloat = 30
         let headerRect = CGRect(x: frame.minX,
                                 y: frame.maxY - headerHeight,
                                 width: frame.width,
                                 height: headerHeight)
-        let headerPath = NSBezierPath(rect: headerRect)
         let headerColor = isSelected
             ? CGColor(red: 0.1, green: 0.2, blue: 0.3, alpha: 1.0)
             : CGColor(red: 0.15, green: 0.2, blue: 0.25, alpha: 1.0)
         context.setFillColor(headerColor)
-        context.addPath(headerPath.cgPath)
+        context.addPath(NSBezierPath(rect: headerRect).cgPath)
         context.fillPath()
         
         // Title text
         let title = node.name
         let attributes: [NSAttributedString.Key: Any] = [
             .font: NSFont.systemFont(ofSize: 13, weight: .semibold),
-            .foregroundColor: isSelected
-                ? NSColor.white
-                : NSColor.black
+            .foregroundColor: isSelected ? NSColor.white : NSColor.black
         ]
-        let titleRect = headerRect.insetBy(dx: 8, dy: 4)
+        let titleRect = headerRect.insetBy(dx: headerHorizontalPadding, dy: headerVerticalPadding)
         title.draw(in: titleRect, withAttributes: attributes)
         
         // Fields list
@@ -78,9 +73,9 @@ class CanvasRenderer {
                 .font: NSFont.systemFont(ofSize: 11),
                 .foregroundColor: NSColor.gray
             ]
-            let fieldRect = CGRect(x: frame.minX + 8,
+            let fieldRect = CGRect(x: frame.minX + fieldHorizontalPadding,
                                    y: fieldY,
-                                   width: frame.width - 16,
+                                   width: frame.width - 2 * fieldHorizontalPadding,
                                    height: 14)
             fieldText.draw(in: fieldRect, withAttributes: fieldAttributes)
             fieldY -= 16

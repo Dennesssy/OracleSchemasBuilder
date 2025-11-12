@@ -1,17 +1,7 @@
-//
-//  SchemaNode.swift
-//  SchemaNodeEditor
-//
-//  Created by Dennis Stewart Jr. on 11/11/25.
-//
-
 import Foundation
 import SwiftUI
 
-enum NodeType: String, Codable, CaseIterable {
-    case table, view, procedure, function, sequence, package
-}
-
+/// Represents a database table, view, or other schema object.
 @Observable
 class SchemaNode: Identifiable, Codable {
     let id: UUID
@@ -90,10 +80,10 @@ class SchemaNode: Identifiable, Codable {
     
     /// Layout helpers for CanvasRenderer
     var frameSize: CGSize {
-        let headerHeight: CGFloat = 30
-        let fieldHeight: CGFloat = 16
-        let totalHeight = headerHeight + CGFloat(fields.count) * fieldHeight + 12
-        return CGSize(width: 300, height: totalHeight)
+        let headerHeight = Constants.Node.headerHeight
+        let fieldHeight = Constants.Node.fieldHeight
+        let totalHeight = headerHeight + CGFloat(fields.count) * fieldHeight + Constants.Node.padding
+        return CGSize(width: Constants.Node.width, height: totalHeight)
     }
     
     var frame: CGRect {

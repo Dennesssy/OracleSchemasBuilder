@@ -58,7 +58,7 @@ struct NodeView: View {
             .padding(8)
             .frame(maxWidth: .infinity, alignment: .leading)
         }
-        .frame(width: 300)
+        .frame(width: Constants.Node.width)
         .background(.background)
         .clipShape(RoundedRectangle(cornerRadius: 8))
         .shadow(color: isSelected ? .accentColor.opacity(0.4) : .black.opacity(0.2), radius: isSelected ? 8 : 4)
@@ -81,69 +81,8 @@ struct NodeView: View {
         .onTapGesture {
             sessionManager.selectNode(node.id)
         }
+        .accessibilityLabel("Node \(node.name)")
     }
     
     private func colorForNode(_ color: NodeColor) -> Color { color.color }
-}
-
-struct FieldRow: View {
-    let field: TableField
-    
-    var body: some View {
-        HStack(spacing: 8) {
-            // Key indicator
-            if field.isPrimaryKey {
-                Image(systemName: "key.fill")
-                    .font(.caption)
-                    .foregroundStyle(.yellow)
-            } else if field.isForeignKey {
-                Image(systemName: "link")
-                    .font(.caption)
-                    .foregroundStyle(.blue)
-            } else {
-                Image(systemName: "circle.fill")
-                    .font(.system(size: 6))
-                    .foregroundStyle(.secondary)
-            }
-            
-            VStack(alignment: .leading, spacing: 2) {
-                Text(field.name)
-                    .font(.body)
-                
-                Text(field.dataType)
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
-            }
-            
-            Spacer()
-            
-            // Constraint badges
-            if field.isNotNull {
-                Text("NN")
-                    .font(.caption2)
-                    .padding(.horizontal, 4)
-                    .padding(.vertical, 2)
-                    .background(.blue.opacity(0.2))
-                    .clipShape(RoundedRectangle(cornerRadius: 3))
-            }
-            
-            if field.isUnique {
-                Text("U")
-                    .font(.caption2)
-                    .padding(.horizontal, 4)
-                    .padding(.vertical, 2)
-                    .background(.purple.opacity(0.2))
-                    .clipShape(RoundedRectangle(cornerRadius: 3))
-            }
-        }
-        .padding(.horizontal, 8)
-        .padding(.vertical, 4)
-    }
-}
-
-#Preview {
-    NodeView(node: SchemaNode.example)
-        .environmentObject(SessionManager())
-        .frame(width: 400, height: 300)
-        .padding()
 }

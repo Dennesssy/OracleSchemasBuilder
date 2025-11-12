@@ -1,17 +1,12 @@
-//
-//  Session.swift
-//  SchemaNodeEditor
-//
-//  Created by Dennis Stewart Jr. on 11/11/25.
-//
-
 import Foundation
 
+/// Represents a complete schema design session.
 @Observable
 class Session: Codable {
     var id: UUID
     var name: String
     var createdDate: Date
+    /// The last modification date of the session.
     var modifiedDate: Date
     var nodes: [SchemaNode]
     var connections: [Connection]

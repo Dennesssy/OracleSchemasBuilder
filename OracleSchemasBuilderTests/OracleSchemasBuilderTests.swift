@@ -1,6 +1,10 @@
 import Testing
 @testable import OracleSchemasBuilder
 
+enum TestError: Error {
+    static let nodeNotFound = TestError()
+}
+
 struct OracleSchemasBuilderTests {
     
     @Test func addNode_createsDefaultTableNode_and_canUndo() async throws {
@@ -18,7 +22,7 @@ struct OracleSchemasBuilderTests {
         // Assert – node added
         #expect(manager.currentSession.nodes.count == 1)
         guard let node = manager.currentSession.nodes.first else {
-            throw "Node not found"
+            throw TestError.nodeNotFound
         }
         #expect(node.name == "NewTable")
         #expect(node.nodeType == .table)

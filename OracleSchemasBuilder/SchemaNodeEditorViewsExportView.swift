@@ -1,12 +1,8 @@
-//
-//  ExportView.swift
-//  SchemaNodeEditor
-//
-//  Created by Dennis Stewart Jr. on 11/11/25.
-//
-
 import SwiftUI
 import UniformTypeIdentifiers
+import OSLog
+
+private let exportLogger = Logger(subsystem: Bundle.main.bundleIdentifier ?? "SchemaNodeEditor", category: "Export")
 
 struct ExportView: View {
     @Environment(\.dismiss) private var dismiss
@@ -19,6 +15,14 @@ struct ExportView: View {
         case sql = "Oracle SQL"
         case markdown = "Markdown"
         case json = "JSON"
+        
+        var fileExtension: String {
+            switch self {
+            case .sql: return "sql"
+            case .markdown: return "md"
+            case .json: return "json"
+            }
+        }
     }
     
     var body: some View {
@@ -52,11 +56,13 @@ struct ExportView: View {
                         NSPasteboard.general.setString(previewText, forType: .string)
                     }
                     .buttonStyle(.bordered)
+                    .accessibilityIdentifier("copyToClipboardButton")
                     
-                    Button("Save to File...") {
+                    Button("Save to File…") {
                         showingFilePicker = true
                     }
                     .buttonStyle(.borderedProminent)
+                    .accessibilityIdentifier("saveToFileButton")
                 }
                 .padding(.bottom)
             }
@@ -86,7 +92,7 @@ struct ExportView: View {
             case .success:
                 dismiss()
             case .failure(let error):
-                print("Export failed: \(error)")
+                exportLogger.error("Export failed: \(error.localizedDescription)")
             }
         }
     }
@@ -109,55 +115,15 @@ struct ExportView: View {
     
     private func contentType(for format: ExportFormat) -> UTType {
         switch format {
-        case .sql: return .plainText
-        case .markdown: return .plainText
-        case .json: return .json
+        case .sql, .markdown:
+            return .plainText
+        case .json:
+            return .json
         }
     }
     
     private func defaultFilename(for format: ExportFormat) -> String {
         let name = sessionManager.currentSession.name.replacingOccurrences(of: " ", with: "_")
-        switch format {
-        case .sql: return "\(name).sql"
-        case .markdown: return "\(name).md"
-        case .json: return "\(name).json"
-        }
+        return "\(name).\(format.fileExtension)"
     }
-}
-
-struct ExportDocument: FileDocument {
-    static var readableContentTypes: [UTType] = [.plainText, .json]
-    
-    var content: String
-    var format: ExportView.ExportFormat
-    
-    init(content: String, format: ExportView.ExportFormat) {
-        self.content = content
-        self.format = format
-    }
-    
-    init(configuration: ReadConfiguration) throws {
-        guard let data = configuration.file.regularFileContents,
-              let string = String(data: data, encoding: .utf8) else {
-            throw CocoaError(.fileReadCorruptFile)
-        }
-        self.content = string
-        self.format = .sql
-    }
-    
-    func fileWrapper(configuration: WriteConfiguration) throws -> FileWrapper {
-        guard let data = content.data(using: .utf8) else {
-            throw CocoaError(.fileWriteUnknown)
-        }
-        return FileWrapper(regularFileWithContents: data)
-    }
-}
-
-#Preview {
-    ExportView()
-        .environmentObject({
-            let manager = SessionManager()
-            manager.currentSession.nodes = [SchemaNode.example]
-            return manager
-        }())
 }

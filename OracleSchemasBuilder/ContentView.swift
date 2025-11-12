@@ -30,12 +30,14 @@ struct ContentView: View {
                     } label: {
                         Label("Add Table", systemImage: "plus.circle")
                     }
+                    .accessibilityIdentifier("addTableButton")
                     
                     Button {
                         showingExport = true
                     } label: {
                         Label("Export Schema", systemImage: "square.and.arrow.up")
                     }
+                    .accessibilityIdentifier("exportSchemaButton")
                     
                     Button {
                         sessionManager.saveSession()
@@ -43,6 +45,7 @@ struct ContentView: View {
                         Label("Save", systemImage: "folder")
                     }
                     .disabled(!sessionManager.isDirty)
+                    .accessibilityIdentifier("saveButton")
                 }
                 .padding(.horizontal)
                 
@@ -64,6 +67,7 @@ struct ContentView: View {
                     } label: {
                         Image(systemName: "doc.badge.plus")
                     }
+                    .accessibilityIdentifier("newSessionButton")
                 }
             }
         } detail: {
@@ -113,23 +117,4 @@ struct ContentView: View {
         }
     }
 }
-
-struct NodeListItem: View {
-    let node: SchemaNode
-    
-    var body: some View {
-        VStack(alignment: .leading, spacing: 4) {
-            Text(node.name)
-                .font(.body)
-            
-            Text("\(node.fields.count) fields")
-                .font(.caption)
-                .foregroundStyle(.secondary)
-        }
-    }
-}
-
-#Preview {
-    ContentView()
-        .environmentObject(SessionManager())
-}
+...
