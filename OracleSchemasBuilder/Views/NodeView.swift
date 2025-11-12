@@ -4,7 +4,6 @@ import SwiftUI
 struct NodeView: View {
     let node: SchemaNode
     @EnvironmentObject var sessionManager: SessionManager
-    @EnvironmentObject var canvasState: CanvasState
     
     var isSelected: Bool {
         sessionManager.selectedNodeId == node.id
@@ -83,7 +82,6 @@ struct NodeView: View {
         )
         .onTapGesture {
             sessionManager.selectNode(node.id)
-            canvasState.selectedNodeId = node.id
         }
         .accessibilityLabel("Node \(node.name)")
     }

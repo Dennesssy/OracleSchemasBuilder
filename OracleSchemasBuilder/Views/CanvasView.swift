@@ -3,8 +3,9 @@ import SwiftUI
 struct CanvasView: View {
     @EnvironmentObject var sessionManager: SessionManager
     @Binding var selectedNodeId: UUID?
-    @Binding var offset: CGSize
-    @Binding var scale: CGFloat
+    // Pan‑zoom is owned locally by the view
+    @State private var offset: CGSize = .zero
+    @State private var scale: CGFloat = 1.0
     
     var body: some View {
         GeometryReader { geometry in

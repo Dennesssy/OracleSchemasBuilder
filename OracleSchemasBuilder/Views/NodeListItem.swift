@@ -1,26 +1,12 @@
 import SwiftUI
 
-/// A lightweight row view for the sidebar node list.
+/// Simple placeholder for the sidebar node list item.
+/// Replace with a richer view if desired.
 struct NodeListItem: View {
     let node: SchemaNode
-    @EnvironmentObject var sessionManager: SessionManager
-
+    
     var body: some View {
-        HStack {
-            Circle()
-                .fill(node.color.color)
-                .frame(width: 12, height: 12)
-            Text(node.name)
-                .foregroundStyle(.primary)
-            Spacer()
-            if sessionManager.selectedNodeId == node.id {
-                Image(systemName: "checkmark")
-                    .foregroundStyle(.accent)
-            }
-        }
-        .contentShape(Rectangle())
-        .onTapGesture {
-            sessionManager.selectNode(node.id)
-        }
+        Text(node.name)
+            .accessibilityIdentifier("nodeListItem_\(node.id.uuidString)")
     }
 }
