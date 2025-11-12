@@ -14,6 +14,7 @@ struct NodeView: View {
             HStack {
                 Image(systemName: "tablecells")
                     .foregroundStyle(.white)
+                    .accessibilityIdentifier("nodeHeaderImage")
                 
                 VStack(alignment: .leading, spacing: 2) {
                     Text(node.name)
