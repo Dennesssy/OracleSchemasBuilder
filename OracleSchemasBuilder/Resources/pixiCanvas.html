@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>PixiJS Canvas</title>
+<style>
+  body { margin: 0; overflow: hidden; background: #2d2d2d; }
+  #pixi-canvas { width: 100%; height: 100%; }
+</style>
+</head>
+<body>
+<script type="module">
+  import * as PIXI from 'https://cdn.jsdelivr.net/npm/pixi.js@8.5.0/dist/pixi.min.js';
+
+  // Create the PixiJS application.
+  const app = new PIXI.Application({
+    width: window.innerWidth,
+    height: window.innerHeight,
+    backgroundAlpha: 0,
+    antialias: true,
+  });
+  document.body.appendChild(app.view);
+
+  // A simple container for all node graphics.
+  const nodeContainer = new PIXI.Container();
+  app.stage.addChild(nodeContainer);
+
+  // Keep track of node graphics by ID.
+  const nodeGraphics = new Map();
+
+  // Receive session data from Swift.
+  window.receiveSession = function(json) {
+    const session = JSON.parse(json);
+    renderSession(session);
+  };
+
+  function renderSession(session) {
+    // Clear existing graphics.
+    nodeGraphics.forEach((g, id) => nodeContainer.removeChild(g));
+    nodeGraphics.clear();
+
+    session.nodes.forEach(node => {
+      const g = createNodeGraphics(node);
+      nodeGraphics.set(node.id, g);
+      nodeContainer.addChild(g);
+    });
+
+    // TODO: Render connections as lines between nodes.
+  }
+
+  function createNodeGraphics(node) {
+    const width = 300;
+    const height = 40 + (node.fields.length * 16);
+
+    const g = new PIXI.Graphics();
+
+    // Node background
+    g.beginFill(hexToNumber(node.color));
+    g.drawRoundedRect(0, 0, width, height, 8);
+    g.endFill();
+
+    // Header
+    g.beginFill(0x000000, 0.15);
+    g.drawRoundedRect(0, 0, width, 30, 8);
+    g.endFill();
+
+    // Title text
+    const style = new PIXI.TextStyle({
+      fontFamily: 'Arial',
+      fontSize: 14,
+      fill: 0xFFFFFF,
+      fontWeight: 'bold',
+    });
+    const title = new PIXI.Text(node.name, style);
+    title.x = 10;
+    title.y = 8;
+    g.addChild(title);
+
+    // Fields
+    const fieldStyle = new PIXI.TextStyle({
+      fontFamily: 'Arial',
+      fontSize: 12,
+      fill: 0xEEEEEE,
+    });
+    node.fields.forEach((f, index) => {
+      const fieldText = new PIXI.Text(`${f.name} ${f.typeDescription}`, fieldStyle);
+      fieldText.x = 10;
+      fieldText.y = 30 + index * 16;
+      g.addChild(fieldText);
+    });
+
+    // Position the node in the Pixi world.
+    g.x = node.position.x;
+    g.y = node.position.y;
+
+    // Make it interactive (drag)
+    g.interactive = true;
+    g.buttonMode = true;
+
+    let dragData: PIXI.InteractionData | null = null;
+
+    g
+      .on('pointerdown', (event) => {
+        dragData = event.data;
+        g.alpha = 0.7;
+      })
+      .on('pointerup', () => {
+        if (dragData) {
+          dragData = null;
+          g.alpha = 1;
+          // Notify Swift about the new position.
+          const newPos = { x: g.x, y: g.y };
+          window.webkit.messageHandlers.schemaHandler.postMessage({
+            type: 'nodeMoved',
+            nodeId: node.id,
+            position: newPos,
+          });
+        }
+      })
+      .on('pointerupoutside', () => {
+        if (dragData) {
+          dragData = null;
+          g.alpha = 1;
+        }
+      })
+      .on('pointermove', (event) => {
+        if (dragData) {
+          const newPosition = dragData.getLocalPosition(g.parent);
+          g.x = newPosition.x;
+          g.y = newPosition.y;
+        }
+      });
+
+    return g;
+  }
+
+  function hexToNumber(str) {
+    // Convert Swift color enum raw value (blue, green, etc.) to a hex code.
+    switch (str) {
+      case 'blue':   return 0x3b82f6;
+      case 'green':  return 0x10b981;
+      case 'orange': return 0xf97316;
+      case 'purple': return 0x8b5cf6;
+      case 'red':    return 0xf43f5e;
+      case 'gray':   return 0x9ca3af;
+      default:       return 0x3b82f6;
+    }
+  }
+
+  // Resize handler
+  window.addEventListener('resize', () => {
+    app.renderer.resize(window.innerWidth, window.innerHeight);
+  });
+</script>
+</body>
+</html>
