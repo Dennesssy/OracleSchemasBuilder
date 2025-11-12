@@ -1,10 +1,3 @@
-//
-//  CanvasView.swift
-//  SchemaNodeEditor
-//
-//  Created by Dennis Stewart Jr. on 11/11/25.
-//
-
 import SwiftUI
 
 struct CanvasView: View {
@@ -32,15 +25,10 @@ struct CanvasView: View {
                 
                 // Nodes
                 ForEach(sessionManager.currentSession.nodes) { node in
-                    NodeView(
-                        node: node,
-                        isSelected: selectedNodeId == node.id,
-                        offset: offset,
-                        scale: scale
-                    )
-                    .onTapGesture {
-                        selectedNodeId = node.id
-                    }
+                    NodeView(node: node)
+                        .onTapGesture {
+                            selectedNodeId = node.id
+                        }
                 }
             }
             .background(Color(nsColor: .controlBackgroundColor))
