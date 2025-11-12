@@ -1,10 +1,3 @@
-//
-//  SessionManager.swift
-//  SchemaNodeEditor
-//
-//  Created by Dennis Stewart Jr. on 11/11/25.
-//
-
 import Foundation
 import SwiftUI
 
@@ -17,9 +10,17 @@ class SessionManager: ObservableObject {
     
     private let storage: SchemaStorage
     
+    /// Undo manager supplied by the UI
+    var undoManager: UndoManager?
+    
     init(storage: SchemaStorage = SchemaStorage()) {
         self.storage = storage
         self.currentSession = Session()
+    }
+    
+    /// Called by the view to inject the environment undo manager
+    func setUndoManager(_ manager: UndoManager?) {
+        self.undoManager = manager
     }
     
     // MARK: - Node Management
@@ -43,31 +44,59 @@ class SessionManager: ObservableObject {
         currentSession.nodes.append(node)
         selectedNodeId = node.id
         markDirty()
+        
+        undoManager?.registerUndo(withTarget: self) { target in
+            target.deleteNode(node.id)
+        }
+        undoManager?.setActionName("Add Node")
+    }
+    
+    func addNode(_ node: SchemaNode) {
+        currentSession.nodes.append(node)
+        selectedNodeId = node.id
+        markDirty()
     }
     
     func updateNode(_ node: SchemaNode) {
-        if let index = currentSession.nodes.firstIndex(where: { $0.id == node.id }) {
-            currentSession.nodes[index] = node
-            markDirty()
+        guard let index = currentSession.nodes.firstIndex(where: { $0.id == node.id }) else { return }
+        let oldNode = currentSession.nodes[index]
+        currentSession.nodes[index] = node
+        markDirty()
+        
+        undoManager?.registerUndo(withTarget: self) { target in
+            target.updateNode(oldNode)
         }
+        undoManager?.setActionName("Edit Node")
     }
     
     func deleteNode(_ nodeId: UUID) {
+        guard let node = currentSession.nodes.first(where: { $0.id == nodeId }) else { return }
         currentSession.nodes.removeAll { $0.id == nodeId }
-        currentSession.connections.removeAll { 
-            $0.sourceNodeId == nodeId || $0.targetNodeId == nodeId 
+        currentSession.connections.removeAll { $0.sourceNodeId == nodeId || $0.targetNodeId == nodeId }
+        if selectedNodeId == nodeId { selectedNodeId = nil }
+        markDirty()
+        
+        undoManager?.registerUndo(withTarget: self) { target in
+            target.readdNode(node)
         }
-        if selectedNodeId == nodeId {
-            selectedNodeId = nil
-        }
+        undoManager?.setActionName("Delete Node")
+    }
+    
+    private func readdNode(_ node: SchemaNode) {
+        currentSession.nodes.append(node)
         markDirty()
     }
     
     func moveNode(_ nodeId: UUID, to position: CGPoint) {
-        if let index = currentSession.nodes.firstIndex(where: { $0.id == nodeId }) {
-            currentSession.nodes[index].position = position
-            markDirty()
+        guard let index = currentSession.nodes.firstIndex(where: { $0.id == nodeId }) else { return }
+        let oldPosition = currentSession.nodes[index].position
+        currentSession.nodes[index].position = position
+        markDirty()
+        
+        undoManager?.registerUndo(withTarget: self) { target in
+            target.moveNode(nodeId, to: oldPosition)
         }
+        undoManager?.setActionName("Move Node")
     }
     
     // MARK: - Connection Management
@@ -75,13 +104,27 @@ class SessionManager: ObservableObject {
     func addConnection(_ connection: Connection) {
         currentSession.connections.append(connection)
         markDirty()
+        
+        undoManager?.registerUndo(withTarget: self) { target in
+            target.deleteConnection(connection.id)
+        }
+        undoManager?.setActionName("Add Connection")
     }
     
     func deleteConnection(_ connectionId: UUID) {
+        guard let connection = currentSession.connections.first(where: { $0.id == connectionId }) else { return }
         currentSession.connections.removeAll { $0.id == connectionId }
-        if selectedConnectionId == connectionId {
-            selectedConnectionId = nil
+        if selectedConnectionId == connectionId { selectedConnectionId = nil }
+        markDirty()
+        
+        undoManager?.registerUndo(withTarget: self) { target in
+            target.readdConnection(connection)
         }
+        undoManager?.setActionName("Delete Connection")
+    }
+    
+    private func readdConnection(_ connection: Connection) {
+        currentSession.connections.append(connection)
         markDirty()
     }
     
@@ -156,5 +199,10 @@ class SessionManager: ObservableObject {
         currentSession.nodes.append(node)
         selectedNodeId = node.id
         markDirty()
+        
+        undoManager?.registerUndo(withTarget: self) { target in
+            target.deleteNode(node.id)
+        }
+        undoManager?.setActionName("Add View Node")
     }
 }

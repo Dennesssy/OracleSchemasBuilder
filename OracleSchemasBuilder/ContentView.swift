@@ -1,14 +1,8 @@
-//
-//  ContentView.swift
-//  SchemaNodeEditor
-//
-//  Created by Dennis Stewart Jr. on 11/11/25.
-//
-
 import SwiftUI
 
 struct ContentView: View {
     @EnvironmentObject var sessionManager: SessionManager
+    @Environment(\.undoManager) var undoManager
     @State private var showingInspector = true
     @State private var showingExport = false
     
@@ -112,6 +106,10 @@ struct ContentView: View {
             .sheet(isPresented: $showingExport) {
                 ExportView()
             }
+        }
+        .onAppear {
+            // Provide the UndoManager to SessionManager
+            sessionManager.setUndoManager(undoManager)
         }
     }
 }
