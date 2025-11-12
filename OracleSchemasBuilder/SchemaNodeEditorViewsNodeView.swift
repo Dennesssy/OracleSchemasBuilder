@@ -1,5 +1,6 @@
 import SwiftUI
 
+#if false
 struct NodeView: View {
     let node: SchemaNode
     @EnvironmentObject var sessionManager: SessionManager
@@ -87,3 +88,4 @@ struct NodeView: View {
     
     private func colorForNode(_ color: NodeColor) -> Color { color.color }
 }
+#endif

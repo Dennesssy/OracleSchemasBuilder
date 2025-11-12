@@ -1,1 +1,3 @@
-// No changes required – the file references SessionInspector and NodeInspector which remain unchanged.
+#if false
+// Placeholder for the inspector view. No changes needed.
+#endif

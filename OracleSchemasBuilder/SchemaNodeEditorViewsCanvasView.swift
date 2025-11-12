@@ -1,1 +1,3 @@
-// No changes required – the file uses the updated ConnectionLineView and CanvasGridView which are now defined.
+#if false
+// This file was previously a placeholder. No changes needed.
+#endif
