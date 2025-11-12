@@ -1,5 +1,6 @@
 import SwiftUI
 
+/// Visual representation of a database table on the canvas.
 struct NodeView: View {
     let node: SchemaNode
     @EnvironmentObject var sessionManager: SessionManager
@@ -15,6 +16,7 @@ struct NodeView: View {
             HStack {
                 Image(systemName: "tablecells")
                     .foregroundStyle(.white)
+                    .accessibilityIdentifier("nodeHeaderImage")
                 
                 VStack(alignment: .leading, spacing: 2) {
                     Text(node.name)

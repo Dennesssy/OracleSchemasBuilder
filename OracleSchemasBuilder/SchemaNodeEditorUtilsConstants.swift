@@ -1,10 +1,3 @@
-//
-//  Constants.swift
-//  SchemaNodeEditor
-//
-//  Created by Dennis Stewart Jr. on 11/11/25.
-//
-
 import Foundation
 import CoreGraphics
 
@@ -67,5 +60,11 @@ enum Constants {
         ]
         
         static let all: [String] = numeric + character + dateTime + binary
+    }
+
+    // MARK: - File
+    enum File {
+        /// Range used for generating a random default position for new nodes.
+        static let defaultPositionRange: ClosedRange<Double> = -400...400
     }
 }
