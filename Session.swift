@@ -1,21 +1,22 @@
 import Foundation
+import CoreGraphics
+import SwiftUI
+import Combine // Required for @Published and ObservableObject
 
-/// Represents a complete schema design session.
-@Observable
-class Session: Codable {
-    var id: UUID
-    var name: String
-    var createdDate: Date
-    /// The last modification date of the session.
-    var modifiedDate: Date
-    var nodes: [SchemaNode]
-    var connections: [Connection]
-    var canvasOffset: CGPoint
-    var canvasScale: Double
+final class Session: ObservableObject, Codable, Identifiable {
+    @Published var id: UUID
+    @Published var name: String
+    @Published var createdDate: Date
+    @Published var modifiedDate: Date
+    @Published var nodes: [SchemaNode]
+    @Published var connections: [Connection]
+    
+    @Published var canvasOffset: CGPoint
+    @Published var canvasScale: Double
     
     init(
         id: UUID = UUID(),
-        name: String = "Untitled Schema",
+        name: String = "Untitled Session",
         createdDate: Date = Date(),
         modifiedDate: Date = Date(),
         nodes: [SchemaNode] = [],
@@ -33,32 +34,21 @@ class Session: Codable {
         self.canvasScale = canvasScale
     }
     
-    // MARK: - Compatibility aliases used throughout the UI
-    
-    /// The UI (ContentView, ExportView, SessionManager) expects `modifiedAt`
-    var modifiedAt: Date {
-        get { modifiedDate }
-        set { modifiedDate = newValue }
-    }
-    
-    /// The UI uses `canvasZoom`; map it to `canvasScale`
-    var canvasZoom: Double {
-        get { canvasScale }
-        set { canvasScale = newValue }
-    }
-    
-    /// Convenience counts for the inspector & sidebar
-    var tableCount: Int { nodes.count }
-    var fieldCount: Int { nodes.reduce(0) { $0 + $0.fields.count } }
+    // MARK: - Computed Properties
+    var tableCount: Int { nodes.filter { $0.type == .table }.count }
+    var fieldCount: Int { nodes.reduce(0) { $0 + $1.fields.count } }
     var relationshipCount: Int { connections.count }
+    
+    func node(with id: UUID) -> SchemaNode? {
+        nodes.first { $0.id == id }
+    }
     
     // MARK: - Codable
     enum CodingKeys: String, CodingKey {
-        case id, name, createdDate, modifiedDate
-        case nodes, connections, canvasOffset, canvasScale
+        case id, name, createdDate, modifiedDate, nodes, connections, canvasOffset, canvasScale
     }
     
-    required init(from decoder: Decoder) throws {
+    init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         id = try container.decode(UUID.self, forKey: .id)
         name = try container.decode(String.self, forKey: .name)
@@ -66,10 +56,9 @@ class Session: Codable {
         modifiedDate = try container.decode(Date.self, forKey: .modifiedDate)
         nodes = try container.decode([SchemaNode].self, forKey: .nodes)
         connections = try container.decode([Connection].self, forKey: .connections)
-        
         let offsetArray = try container.decode([CGFloat].self, forKey: .canvasOffset)
-        canvasOffset = CGPoint(x: offsetArray[0], y: offsetArray[1])
-        
+        canvasOffset = CGPoint(x: offsetArray.count > 0 ? offsetArray[0] : 0,
+                               y: offsetArray.count > 1 ? offsetArray[1] : 0)
         canvasScale = try container.decode(Double.self, forKey: .canvasScale)
     }
     
@@ -83,13 +72,5 @@ class Session: Codable {
         try container.encode(connections, forKey: .connections)
         try container.encode([canvasOffset.x, canvasOffset.y], forKey: .canvasOffset)
         try container.encode(canvasScale, forKey: .canvasScale)
-    }
-    
-    func node(with id: UUID) -> SchemaNode? {
-        nodes.first { $0.id == id }
-    }
-    
-    func connection(from sourceId: UUID, to targetId: UUID) -> Connection? {
-        connections.first { $0.sourceNodeId == sourceId && $0.targetNodeId == targetId }
     }
 }

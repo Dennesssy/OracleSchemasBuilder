@@ -1,15 +1,8 @@
-//
-//  InspectorView.swift
-//  OracleSchemasBuilder
-//
-//  Created by Dennis Stewart Jr. on 11/12/25.
-//
-
 import SwiftUI
 
 struct InspectorView: View {
-    @Environment(SessionManager.self) private var sessionManager
-    @Environment(CanvasState.self) private var canvasState
+    @EnvironmentObject private var sessionManager: SessionManager
+    @EnvironmentObject private var canvasState: CanvasState
     
     var body: some View {
         ScrollView {
@@ -68,7 +61,6 @@ struct InfoRow: View {
 #Preview {
     InspectorView()
         .environmentObject(SessionManager())
-        .environment(CanvasState())
+        .environmentObject(CanvasState())
         .frame(width: 300)
 }
-

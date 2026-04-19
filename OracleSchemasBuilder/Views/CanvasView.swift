@@ -1,9 +1,10 @@
 import SwiftUI
 
 struct CanvasView: View {
-    @Environment(SessionManager.self) private var sessionManager
+    @EnvironmentObject private var sessionManager: SessionManager
     @Binding var selectedNodeId: UUID?
-    // Pan‑zoom is owned locally by the view
+    
+    // Pan‑zoom is owned locally or could be driven by CanvasState
     @State private var offset: CGSize = .zero
     @State private var scale: CGFloat = 1.0
     
@@ -23,7 +24,9 @@ struct CanvasView: View {
                 }
                 
                 ForEach(sessionManager.currentSession.nodes) { node in
-                    NodeView(node: node)
+                    // Assuming NodeView exists and takes a SchemaNode
+                    Text(node.name) 
+                        .position(x: node.position.x + offset.width, y: node.position.y + offset.height)
                         .onTapGesture {
                             sessionManager.selectNode(node.id)
                             selectedNodeId = node.id
@@ -43,23 +46,19 @@ struct CanvasView: View {
             .gesture(
                 MagnificationGesture()
                     .onChanged { value in
-                        let clamped = max(Constants.Canvas.minZoom,
-                                         min(Constants.Canvas.maxZoom, value))
+                        let clamped = max(SchemaEditorConstants.Canvas.minZoom,
+                                         min(SchemaEditorConstants.Canvas.maxZoom, value))
                         scale = clamped
                     }
             )
-            .accessibilityIdentifier("canvasView")
             .contextMenu {
                 Button("Add Table Node") {
                     sessionManager.addTableNode(at: CGPoint(x: 100, y: 100))
                 }
-                
                 Button("Add View Node") {
                     sessionManager.addViewNode(at: CGPoint(x: 100, y: 100))
                 }
-                
                 Divider()
-                
                 Button("Reset View") {
                     withAnimation {
                         offset = .zero

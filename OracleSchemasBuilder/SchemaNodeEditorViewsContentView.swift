@@ -7,7 +7,8 @@
 
 import SwiftUI
 
-struct ContentView: View {
+// Renamed to avoid collision with the app's main ContentView
+struct SchemaNodeEditorViewsContentView: View {
     @Environment(SessionManager.self) private var sessionManager
     @State private var selectedNode: SchemaNode?
     @State private var showInspector = true
@@ -79,6 +80,6 @@ struct ContentView: View {
 }
 
 #Preview {
-    ContentView()
+    SchemaNodeEditorViewsContentView()
         .environmentObject(SessionManager())
 }

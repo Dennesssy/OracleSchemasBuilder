@@ -6,6 +6,15 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		312F5B9D2F94A82A0023033C /* Session.swift in Sources */ = {isa = PBXBuildFile; fileRef = 312F5B9C2F94A82A0023033C /* Session.swift */; };
+		312F5B9F2F94A8300023033C /* SchemaNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 312F5B9E2F94A8300023033C /* SchemaNode.swift */; };
+		312F5BA12F94A8340023033C /* Connection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 312F5BA02F94A8340023033C /* Connection.swift */; };
+		312F5BA32F94A8400023033C /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 312F5BA22F94A8400023033C /* ContentView.swift */; };
+		312F5BA52F94A8A50023033C /* SchemaNodeEditorAppApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 312F5BA42F94A8A50023033C /* SchemaNodeEditorAppApp.swift */; };
+		312F5BA72F94AD010023033C /* CanvasState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 312F5BA62F94AD010023033C /* CanvasState.swift */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXContainerItemProxy section */
 		315DDCA12EC400B300289AC7 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -24,9 +33,15 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		315DDC932EC400B100289AC7 /* OracleSchemasBuilder.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = OracleSchemasBuilder.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		315DDCA02EC400B300289AC7 /* OracleSchemasBuilderTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = OracleSchemasBuilderTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		315DDCAA2EC400B300289AC7 /* OracleSchemasBuilderUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = OracleSchemasBuilderUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		312F5B9C2F94A82A0023033C /* Session.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Session.swift; sourceTree = "<group>"; };
+		312F5B9E2F94A8300023033C /* SchemaNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SchemaNode.swift; sourceTree = "<group>"; };
+		312F5BA02F94A8340023033C /* Connection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Connection.swift; sourceTree = "<group>"; };
+		312F5BA22F94A8400023033C /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		312F5BA42F94A8A50023033C /* SchemaNodeEditorAppApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SchemaNodeEditorAppApp.swift; sourceTree = "<group>"; };
+		312F5BA62F94AD010023033C /* CanvasState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CanvasState.swift; sourceTree = "<group>"; };
+		315DDC932EC400B100289AC7 /* OracleSchemasBuilder.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; name = OracleSchemasBuilder.app; path = /Users/denn/Desktop/OCIMain/OracleSchemasBuilder/build/Debug/OracleSchemasBuilder.app; sourceTree = "<absolute>"; };
+		315DDCA02EC400B300289AC7 /* OracleSchemasBuilderTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; name = OracleSchemasBuilderTests.xctest; path = /Users/denn/Desktop/OCIMain/OracleSchemasBuilder/build/Debug/OracleSchemasBuilder.app/Contents/PlugIns/OracleSchemasBuilderTests.xctest; sourceTree = "<absolute>"; };
+		315DDCAA2EC400B300289AC7 /* OracleSchemasBuilderUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; name = OracleSchemasBuilderUITests.xctest; path = "/Users/denn/Desktop/OCIMain/OracleSchemasBuilder/build/Debug/OracleSchemasBuilderUITests-Runner.app/Contents/PlugIns/OracleSchemasBuilderUITests.xctest"; sourceTree = "<absolute>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -78,18 +93,13 @@
 				315DDC952EC400B100289AC7 /* OracleSchemasBuilder */,
 				315DDCA32EC400B300289AC7 /* OracleSchemasBuilderTests */,
 				315DDCAD2EC400B300289AC7 /* OracleSchemasBuilderUITests */,
-				315DDC942EC400B100289AC7 /* Products */,
+				312F5B9C2F94A82A0023033C /* Session.swift */,
+				312F5B9E2F94A8300023033C /* SchemaNode.swift */,
+				312F5BA02F94A8340023033C /* Connection.swift */,
+				312F5BA22F94A8400023033C /* ContentView.swift */,
+				312F5BA42F94A8A50023033C /* SchemaNodeEditorAppApp.swift */,
+				312F5BA62F94AD010023033C /* CanvasState.swift */,
 			);
-			sourceTree = "<group>";
-		};
-		315DDC942EC400B100289AC7 /* Products */ = {
-			isa = PBXGroup;
-			children = (
-				315DDC932EC400B100289AC7 /* OracleSchemasBuilder.app */,
-				315DDCA02EC400B300289AC7 /* OracleSchemasBuilderTests.xctest */,
-				315DDCAA2EC400B300289AC7 /* OracleSchemasBuilderUITests.xctest */,
-			);
-			name = Products;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -196,7 +206,7 @@
 			mainGroup = 315DDC8A2EC400B100289AC7;
 			minimizedProjectReferenceProxies = 1;
 			preferredProjectObjectVersion = 77;
-			productRefGroup = 315DDC942EC400B100289AC7 /* Products */;
+			productRefGroup = 315DDC8A2EC400B100289AC7;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
@@ -236,6 +246,12 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				312F5BA72F94AD010023033C /* CanvasState.swift in Sources */,
+				312F5B9F2F94A8300023033C /* SchemaNode.swift in Sources */,
+				312F5BA12F94A8340023033C /* Connection.swift in Sources */,
+				312F5BA32F94A8400023033C /* ContentView.swift in Sources */,
+				312F5BA52F94A8A50023033C /* SchemaNodeEditorAppApp.swift in Sources */,
+				312F5B9D2F94A82A0023033C /* Session.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

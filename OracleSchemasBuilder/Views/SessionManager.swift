@@ -1,64 +1,46 @@
-//
-//  SessionManager.swift
-//  OracleSchemasBuilder
-//
-//  Created by Dennis Stewart Jr. on 11/12/25.
-//
-
 import Foundation
 import SwiftUI
+import Combine
 
-/// Manages the current schema design session, including undo/redo support.
-@Observable
-class SessionManager {
-    var currentSession: Session
-    var isDirty: Bool = false
-    var undoManager: UndoManager?
-    var selectedNodeId: UUID?
+/// Manages the current schema design session.
+final class SessionManager: ObservableObject {
+    @Published var currentSession: Session
+    @Published var isDirty: Bool = false
+    @Published var selectedNodeId: UUID?
+    
+    private var undoManager: UndoManager?
     
     init() {
-        self.currentSession = Session()
+        // Initialize with a default Session object
+        self.currentSession = Session(
+            id: UUID(),
+            name: "Untitled Session",
+            createdDate: Date(),
+            modifiedDate: Date(),
+            nodes: [],
+            connections: []
+        )
     }
-    
-    // MARK: - Undo Manager
     
     func setUndoManager(_ undoManager: UndoManager?) {
         self.undoManager = undoManager
     }
-    
-    // MARK: - Session Management
     
     func newSession() {
         currentSession = Session()
         isDirty = false
     }
     
-    func saveSession() {
-        // TODO: Implement actual persistence logic
-        currentSession.modifiedDate = Date()
-        isDirty = false
-        print("Session saved: \(currentSession.name)")
-    }
-    
-    // MARK: - Node Management
-    
     func addNode() {
-        let newNode = SchemaNode(
-            id: UUID(),
-            name: "Table_\(currentSession.nodes.count + 1)",
-            position: CGPoint(x: 100, y: 100),
-            fields: []
-        )
-        currentSession.nodes.append(newNode)
-        markDirty()
+        addTableNode()
     }
     
     func addTableNode(at position: CGPoint = CGPoint(x: 100, y: 100)) {
         let newNode = SchemaNode(
             id: UUID(),
             name: "Table_\(currentSession.nodes.count + 1)",
-            position: position,
-            fields: []
+            type: .table,
+            position: position
         )
         currentSession.nodes.append(newNode)
         markDirty()
@@ -68,35 +50,29 @@ class SessionManager {
         let newNode = SchemaNode(
             id: UUID(),
             name: "View_\(currentSession.nodes.count + 1)",
-            position: position,
-            fields: []
+            type: .view,
+            position: position
         )
         currentSession.nodes.append(newNode)
         markDirty()
     }
     
-    func selectNode(_ nodeId: UUID) {
-        selectedNodeId = nodeId
-        print("Selected node: \(nodeId)")
+    func moveNode(_ id: UUID, to position: CGPoint) {
+        if let index = currentSession.nodes.firstIndex(where: { $0.id == id }) {
+            currentSession.nodes[index].position = position
+            markDirty()
+        }
     }
     
-    func removeNode(_ nodeId: UUID) {
-        currentSession.nodes.removeAll { $0.id == nodeId }
-        // Also remove any connections to/from this node
-        currentSession.connections.removeAll { 
-            $0.sourceNodeId == nodeId || $0.targetNodeId == nodeId 
-        }
+    func selectNode(_ nodeId: UUID?) {
+        selectedNodeId = nodeId
+    }
+    
+    func deleteNode(_ id: UUID) {
+        currentSession.nodes.removeAll { $0.id == id }
+        currentSession.connections.removeAll { $0.sourceNodeId == id || $0.targetNodeId == id }
         markDirty()
     }
-    
-    // MARK: - Export
-    
-    func exportAsMarkdown() {
-        // TODO: Implement markdown export
-        print("Exporting as Markdown...")
-    }
-    
-    // MARK: - Helpers
     
     private func markDirty() {
         isDirty = true
